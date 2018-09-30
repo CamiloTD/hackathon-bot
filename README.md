@@ -190,71 +190,71 @@ This bot exposes four basic commands:
 
 + **/setup [trello-api-key] [trello-token]:**
 
-+ If some parameters are blank, then, ask for them
+    + If some parameters are blank, then, ask for them
 
-+ Try to load the trello boards
+    + Try to load the trello boards
 
-+ If cannot fetch, writes an `invalid credentials` error to the client then end.
+        + If cannot fetch, writes an `invalid credentials` error to the client then end.
 
-+ Set's up in the session manager
+    + Set's up in the session manager
 
-+ Saves the session manager data into the `storage (storage/index.js)`
+    + Saves the session manager data into the `storage (storage/index.js)`
 
 + **/link [github_repo (owner/project)]**
 
-+ If github_repo is blank, then, ask for it
+    + If github_repo is blank, then, ask for it
 
-+ Try to get repo info
+    + Try to get repo info
 
-+ If cannot fetch
+        + If cannot fetch
 
-+ If status is `404`, sends an `invalid repository`error to the client, then end.
+            + If status is `404`, sends an `invalid repository`error to the client, then end.
 
-+ Sends an `internal error` to the client then end.
+            + Sends an `internal error` to the client then end.
 
-+ Get trello's boards and search if some of then exists with the github repo full name
+    + Get trello's boards and search if some of then exists with the github repo full name
 
-+ If not exists, then create one and notify to the client
+        + If not exists, then create one and notify to the client
 
-+ Create an object `{ backlog, todo, done }` with the `Backlog`, `To Do` and `Done` lists, if some of these files does not exists, then create them
+    + Create an object `{ backlog, todo, done }` with the `Backlog`, `To Do` and `Done` lists, if some of these files does not exists, then create them
 
-+ If there are other existing lists, it will send a warning to the client encouraging to delete them from the board
+        + If there are other existing lists, it will send a warning to the client encouraging to delete them from the board
 
-+ It will iterate over the repo issues, it will try to get the trello's members from asignees's username and email (if public)
+    + It will iterate over the repo issues, it will try to get the trello's members from asignees's username and email (if public)
 
-+ If there is not a card with the name of the repo in any of the `standart` lists *(Backlog, To Do, Done)*, then create a card
+        + If there is not a card with the name of the repo in any of the `standart` lists *(Backlog, To Do, Done)*, then create a card
 
-+ If there is one, then update it
+        + If there is one, then update it
 
-+ It will iterate over the existing cards, and find the cards that **exists in trello, but not in github** (For a closed issue for example). For each card:
+    + It will iterate over the existing cards, and find the cards that **exists in trello, but not in github** (For a closed issue for example). For each card:
 
-+ If the card is in 'Backlog', then remove it
+        + If the card is in 'Backlog', then remove it
 
-+ If the card is in 'To Do', then move it to 'Done'
+        + If the card is in 'To Do', then move it to 'Done'
 
-+ Sends a success message to the client
+    + Sends a success message to the client
 
 + **/issues [github_repo]**
 
-+ If github_repo is blank, then, ask for it
+    + If github_repo is blank, then, ask for it
 
-+ Try to get repo issues
+    + Try to get repo issues
 
-+ If cannot fetch
+        + If cannot fetch
 
-+ If status is `404`, sends an `invalid repository`error to the client, then end.
+            + If status is `404`, sends an `invalid repository`error to the client, then end.
 
-+ Sends an `internal error` to the client then end.
+            + Else, Sends an `internal error` to the client then end.
 
-+ Sends a list of the issues with its respective urls
+    + Sends a list of the issues with its respective urls
 
 + **/myboards:**
 
-+ Try to get the boards from trello
+    + Try to get the boards from trello
 
-+ If cannot, then sends a `internal error` to the client, then end.
+        + If cannot fetch, then sends a `internal error` to the client, then end.
 
-+ Sends a list of the boards in the format: `name: desc`
+    + Sends a list of the boards in the format: `name: desc`
 
   
 
@@ -388,9 +388,9 @@ Here i wanted to test if the setup command actually sets up the trello account, 
 
 + It logouts from `test_config.user_id` for ensuring that the user is not configured before the setup starts
 + It sets an `once` listener for the `setup` command and then check:
-+ If user session is not created in the `user_manager`, then throws an error
-+ If the API Key or the Token are different to the `{ api_key, token }`, then throws an error
-+ Else, the test passes
+    + If user session is not created in the `user_manager`, then throws an error
+    + If the API Key or the Token are different to the `{ api_key, token }`, then throws an error
+    + Else, the test passes
 
 **Testing the /link command:**
 
