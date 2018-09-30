@@ -193,8 +193,16 @@ module.exports = (async () => {
                                 idList: backlog.id
                             });
                 } else await trello.editCard(card_id, {
-                    desc: body
-                })   
+                    desc: body,
+                });
+
+                for(let i=0, l=users.length;i<l;i++) {
+                    try {
+                        await trello.post('cards/' + card_id + '/idMembers', { value: users[i] });
+                    } catch (e) {
+                        
+                    }
+                }
             }
         }
 
