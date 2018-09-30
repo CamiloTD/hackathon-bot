@@ -13,6 +13,15 @@
 *Tellonizer* is a telegram bot that can post issues from [Github](https://github.com) to [Trello](https://trelo.com) boards.
 
   
+## Features
++ Copy your github issues into a Trello `Backlog` list
++ Every time you run the command, all cards will automatically updated
++ If an issue is closed
+	+ It removes it if it is in the `Backlog` list
+	+ It moves it to `Done` if it is in the To Do list
++ Lists the `asignees` to the card if the `github username` or `github email (if public)` is the same of `trello`
++ Lists your github repo's issues
++ List your trello's boards
 
 ### ¿How does it work?
 

@@ -39,7 +39,7 @@ module.exports = (async () => {
         let user = user_manager.setup(from, api_key, token);
         Storage.save('users', user_manager);
 
-        await bot.write(from.id, `Your trello account has been setted.\nYou can start configuring your workspace, use */help* if you need my... help :D`);
+        await bot.write(from.id, `Your trello account has been setted.\nYou can start configuring your workspace, use */link* if you want to... link a github repo :D`);
     } 
     const issues = exports.issues = async ([ repo ], { from }) => {
         try {
