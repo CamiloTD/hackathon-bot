@@ -6,6 +6,7 @@ class TelegramBot extends EventEmitter {
     
     constructor (config = {}) {
         super();
+        config.watcher = config.watcher || {};
         this.token = config.token;
         this.info  = {};
         this.watcher = {

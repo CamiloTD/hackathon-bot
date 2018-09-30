@@ -1,12 +1,7 @@
 const Config = require('../config');
 const App = require('../app');
 const colors = require('colors/safe');
-const test_config = {
-    api_key: "20ce2aefc5f1f780df97970df8c64cc2",
-    token: "84a55b0c060ea94fce969b93d014b720e4c47e2827f7c03c36647e52417effa3",
-    user_id: 665822399,
-    github_repo: 'CamiloTD/hackathon-bot'
-}
+const test_config = require('./config');
 
 let test_count = 1;
 const test = ( msg ) => {
