@@ -50,21 +50,82 @@ You can also run the tests with the command:
 ## The Logic Behind
 In this space, i gonna try to explain you, how is the program architecture and the logic behind the code.
 
-### The Directory Structure
-```batch
-api/ <-- API Folder, the connections to remote APIs are programmed in the files inside
-	telegram.js <-- Telegram bot library, is basically an EventEmitter that emits commands and messages, and ofc, can reply and send data
-	github.js <-- Github API, its designed only for public repos
-	trello.js <-- Trello API, has a lot of functions for managing trello boards, lists and cards
-classes/usermanager.js <-- User Session Manager
-storage/ <-- Small and ultra-simple json data storage
-	index.js <-- Exposes .save and .load for storing data in the disk
-	users.json <-- Users storage, its created automatically, you can delete this file if you want to reset all users
+### The Code Structure
+This is the general folder structure of the code with some info about it:
+```js
+api/ // API Folder, the connections to remote APIs are programmed in the files inside
+	telegram.js // Telegram bot library, is basically an EventEmitter that emits commands and messages, and ofc, can reply and send data
+	github.js // Github API, its designed only for public repos
+	trello.js // Trello API, has a lot of functions for managing trello boards, lists and cards
+classes/usermanager.js // User Session Manager
+storage/ // Small and ultra-simple json data storage
+	index.js // Exposes .save and .load for storing data in the disk
+	users.json // Users storage, its created automatically, you can delete this file if you want to reset all users
 unit-tests/
-	index.js <-- Unitary testing, hooks the /app.js commands and check if they are working correctly as expected
-	config.json <-- Setup test parameters here (We recommend you to not to change them, they are configured with my user id and my trello's keys, change it only if you have the fields correctly)
+	index.js // Unitary testing, hooks the /app.js commands and check if they are working correctly as expected
+	config.json // Setup test parameters here (We recommend you to not to change them, they are configured with my user id and my trello's keys, change it only if you have the fields correctly)
 index.js
-app.js <-- Exposes Tellonizer app logic, here you can find command definitions and everything else related to bot's logic
+app.js // Exposes Tellonizer app logic, here you can find command definitions and everything else related to bot's logic
 config.json
 ```
 
+### The  Happy Index.js
+
+The magic starts when you run `npm start`, in that moment the `index.js` script will run.
+
+`index.js` will require `app.js` that exports instances of three of the main classes of the app 
+```js
+{
+	bot, // api/telegram.js instance configured with the /config.js options
+	github, // api/github instance, it does not have any specific config
+	user_manager, // Bot's session manager from classes/usermanager.js
+	exports: { // Command events are exported here
+		setup: ([api_key, token], message) => "Setup a trello account",
+		link:  ([ github_repo ], message) => "Link a github repo with your trello account",
+		issues: ([ github_repo ], message) => "Show issues for a given repo",
+		myboards: ([], message) => "Show your current trello's boards"
+	}
+}
+```
+
+Then, it will attach the main events to the bot:
+- Prints a success message
+- Attach a listener to bot's `command`event for logging the incoming commands
+
+## Inside the Commands
+
+This bot exposes four basic commands:
++ **/setup [trello-api-key] [trello-token]:**
+	+  If some parameters are blank, then, ask for them
+	+  Try to load the trello boards
+		+ If cannot fetch, writes an `invalid credentials` error to the client then end.
+	+ Set's up in the session manager
+	+ Saves the session manager data into the `storage (storage/index.js)`
++ **/link [github_repo (owner/project)]**
+	+  If github_repo is blank, then, ask for it
+	+ Try to get repo info
+		+ If cannot fetch
+			+ If status is `404`, sends an `invalid repository`error to the client, then end. 
+			+ Sends an `internal error` to the client then end.
+	+ Get trello's boards and search if some of then exists with the github repo full name
+		+ If not exists, then create one and notify to the client
+	+ Create an object `{ backlog, todo, done }` with the `Backlog`, `To Do` and `Done` lists, if some of these files does not exists, then create them
+		+ If there are other existing lists, it will send a warning to the client encouraging to delete them from the board
+	+ It will iterate over the repo issues, it will try to get the trello's members from asignees's username and email (if public)
+	+ If there is not a card with the name of the repo in any of the `standart` lists *(Backlog, To Do, Done)*, then create a card
+		+ If there is one, then update it
+	+ It will iterate over the existing cards, and find the cards that **exists in trello, but not in github** (For a closed issue for example). For each card:
+		+ If the card is in 'Backlog', then remove it
+		+ If the card is in 'To Do', then move it to 'Done'
+	+ Sends a success message to the client
++ **/issues [github_repo]**
+	+  If github_repo is blank, then, ask for it
+	+ Try to get repo issues
+		+ If cannot fetch
+			+ If status is `404`, sends an `invalid repository`error to the client, then end. 
+			+ Sends an `internal error` to the client then end.
+		+ Sends a list of the issues with its respective urls
++ **/myboards:**
+	+ Try to get the boards from trello
+		+ If cannot, then sends a `internal error` to the client, then end.
+	+ Sends a list of the boards in the format: `name: desc`
