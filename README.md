@@ -22,6 +22,7 @@
 + Lists the `asignees` to the card if the `github username` or `github email (if public)` is the same of `trello`
 + Lists your github repo's issues
 + List your trello's boards
++ It's multiuser!
 
 ### ¿How does it work?
 

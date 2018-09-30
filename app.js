@@ -147,6 +147,7 @@ module.exports = (async () => {
 
         let issues = await github.issues(repo);
         let { backlog, todo, done } = repo_lists;
+        let assignees_set = {};
 
         for(let i=0, issue;issue=issues[i++];){
             let { title, body } = issue;
@@ -158,28 +159,43 @@ module.exports = (async () => {
                     users.push((await trello.get('members/' + assignees[j].login.toLowerCase())).id);
                 } catch (e) {
                     try { 
-                        if(asignees[j].email)
+                        if(assignees[j].email)
                             users.push((await trello.get('members/' + assignees[j].email.toLowerCase())).id);
                     } catch (_e) {
-                        console.log(e);
+                        assignees[assignees[j].login] = true;
                     }
                 }
             }
-            let card_id = null;
 
-            if(!backlog.cards.some((card) => (card.name === title) && (card_id = card.id))
-                && !todo.cards.some((card) => (card.name === title) && (card_id = card.id))
-                && !done.cards.some((card) => (card.name === title) && (card_id = card.id))) {
-                        await trello.createCard({
-                            name: title,
-                            desc: body,
-                            idList: backlog.id,
-                            idMembers: users.join(',')
-                        });
-            } else await trello.editCard(card_id, {
-                desc: body,
-                idMembers: users.join(',')
-            })
+            let card_id = null;
+            
+            try {
+                if(!backlog.cards.some((card) => (card.name === title) && (card_id = card.id))
+                    && !todo.cards.some((card) => (card.name === title) && (card_id = card.id))
+                    && !done.cards.some((card) => (card.name === title) && (card_id = card.id))) {
+                            await trello.createCard({
+                                name: title,
+                                desc: body,
+                                idList: backlog.id,
+                                idMembers: users.join(',')
+                            });
+                } else await trello.editCard(card_id, {
+                    desc: body,
+                    idMembers: users.join(',')
+                })   
+            } catch (exc) {
+                if(!backlog.cards.some((card) => (card.name === title) && (card_id = card.id))
+                    && !todo.cards.some((card) => (card.name === title) && (card_id = card.id))
+                    && !done.cards.some((card) => (card.name === title) && (card_id = card.id))) {
+                            await trello.createCard({
+                                name: title,
+                                desc: body,
+                                idList: backlog.id
+                            });
+                } else await trello.editCard(card_id, {
+                    desc: body
+                })   
+            }
         }
 
         for(let i=0, card;card=backlog.cards[i++];) {
@@ -191,7 +207,10 @@ module.exports = (async () => {
             if(!issues.some(({ title }) => title === card.name))
                 await trello.editCard(card.id, { idList: done.id })
         }
-        
+        if(assignees_set.size){
+            await bot.write(from.id, "The following assignees weren't found in trello:");
+            await bot.sendList(from.id, Object.keys(assignees_set));
+        }
         await bot.write(from.id, `[${repo}](${repo_board.url}) is *now* completely synchronized with the repository.`);
     };
 
