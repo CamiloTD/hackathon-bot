@@ -1,0 +1,9 @@
+{
+    "telegram" : {
+        "token": "687083187:AAEQ1RoA-xHs102J1eDsMaeCRKTHmrbAyeQ",
+        "watcher": {
+            "delay": 10,
+            "start_watching": true
+        }
+    }
+}

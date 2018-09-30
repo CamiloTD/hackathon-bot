@@ -1,0 +1,28 @@
+{
+  "name": "hackathon-bot",
+  "version": "1.0.0",
+  "description": "Hackathon bot. DONT COPY CODE IM WATCHING YOU >:V",
+  "main": "index.js",
+  "scripts": {
+    "start": "node .",
+    "test": "node unit-tests"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CamiloTD/hackathon-bot.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/CamiloTD/hackathon-bot/issues"
+  },
+  "homepage": "https://github.com/CamiloTD/hackathon-bot#readme",
+  "dependencies": {
+    "chatcommand-parser": "^0.1.3",
+    "colors": "^1.3.2",
+    "jest": "^23.6.0",
+    "request": "^2.88.0",
+    "request-promise": "^4.2.2"
+  }
+}
