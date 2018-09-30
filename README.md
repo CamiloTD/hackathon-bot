@@ -54,25 +54,21 @@ Then, open `config.json` file and edit with your preferred options:
 
 {
 
-"telegram": {
+    "telegram": {
 
-"token":  "<your_telegram_bot_token>",
+        "token":  "<your_telegram_bot_token>",
 
-"watcher": { // Some configs about the telegram loop, you can ignore this if you want
+        "watcher": { // Some configs about the telegram loop, you can ignore this if you want
 
-"delay":  10, // Delay of the watching loop ¿How many time will the bot wait for requesting new updates after one is received? (in milis)
+            "delay":  10, // Delay of the watching loop ¿How many time will the bot wait for requesting new updates after one is received? (in milis)
 
-"start_watching":  true, // ¿Must the bot start watching? or should he wait till bot.watch() is called
+            "start_watching":  true, // ¿Must the bot start watching? or should he wait till bot.watch() is called
 
-"pool_size":  10  // ¿How many messages can the bot fetch at the same time?
+            "pool_size":  10  // ¿How many messages can the bot fetch at the same time?
 
+        }
+    }
 }
-
-}
-
-}
-
-  
 
 ```
 
@@ -110,23 +106,23 @@ This is the general folder structure of the code with some info about it:
 
 api/ // API Folder, the connections to remote APIs are programmed in the files inside
 
-telegram.js  // Telegram bot library, is basically an EventEmitter that emits commands and messages, and ofc, can reply and send data
+    telegram.js  // Telegram bot library, is basically an EventEmitter that emits commands and messages, and ofc, can reply and send data
 
-github.js  // Github API, its designed only for public repos
+    github.js  // Github API, its designed only for public repos
 
-trello.js  // Trello API, has a lot of functions for managing trello boards, lists and cards
+    trello.js  // Trello API, has a lot of functions for managing trello boards, lists and cards
 
 classes/usermanager.js  // User Session Manager
 
 storage/ // Small and ultra-simple json data storage
 
-index.js  // Exposes .save and .load for storing data in the disk
+    index.js  // Exposes .save and .load for storing data in the disk
 
-users.json  // Users storage, its created automatically, you can delete this file if you want to reset all users
+    users.json  // Users storage, its created automatically, you can delete this file if you want to reset all users
 
 unit-tests/
 
-index.js  // Unitary testing, hooks the /app.js commands and check if they are working correctly as expected
+    index.js  // Unitary testing, hooks the /app.js commands and check if they are working correctly as expected
 
 config.json  // Setup test parameters here (I recommend you to not to change them, they are configured with my user id and my trello's keys, change it only if you have the fields correctly)
 
@@ -154,23 +150,23 @@ The magic starts when you run `npm start`, in that moment the `index.js` script 
 
 {
 
-bot, // api/telegram.js instance configured with the /config.js options
+    bot, // api/telegram.js instance configured with the /config.js options
 
-github, // api/github instance, it does not have any specific config
+    github, // api/github instance, it does not have any specific config
 
-user_manager, // Bot's session manager from classes/usermanager.js
+    user_manager, // Bot's session manager from classes/usermanager.js
 
-exports: { // Command events are exported here
+    exports: { // Command events are exported here
 
-setup: ([api_key, token], message) =>  "Setup a trello account",
+        setup: ([api_key, token], message) =>  "Setup a trello account",
 
-link: ([ github_repo ], message) =>  "Link a github repo with your trello account",
+        link: ([ github_repo ], message) =>  "Link a github repo with your trello account",
 
-issues: ([ github_repo ], message) =>  "Show issues for a given repo",
+        issues: ([ github_repo ], message) =>  "Show issues for a given repo",
 
-myboards: ([], message) =>  "Show your current trello's boards"
+        myboards: ([], message) =>  "Show your current trello's boards"
 
-}
+    }
 
 }
 
