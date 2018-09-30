@@ -362,7 +362,7 @@ bot.command('repeat', async ([], msg) => {
 
 await  bot.write(msg.from.id, "Hey, please enter a word:");
 
-let { text } = await  bot.nextMessage();
+let { text } = await  bot.nextMessage(msg.from.id);
 
 await  bot.write(msg.from.id, "You have written: " + text);
 
