@@ -129,3 +129,59 @@ This bot exposes four basic commands:
 	+ Try to get the boards from trello
 		+ If cannot, then sends a `internal error` to the client, then end.
 	+ Sends a list of the boards in the format: `name: desc`
+
+## Inside the API's Logic
+
+The **Github** api, and the **Trello** API are just simple HTTP Apis that get/post/put/delete in promise syntax, you can access the default methods, or run methods with `await api['get'|'post'|'put'|'del']('my/api/method', data)`.
+
+The telegram api, is actually a bit more interesting, as it inherits **Event Emitter** for emitting commands and messages from the client.
+
+### The Telegram Bot API
+
+The telegram bot api has the following components:
++ **token:** Telegram bot's token
++ **info:** Telegram bot info fetched from `this.post('getMe')`
++ **watcher:** Telegram watcher options, see **watcher** below
++ **command_listener:** Event emitter that will store the events related to commands
+
+#### How Telegram Bot API handles messages
+
++ The message handling is done by a update loop, that will make a long polling request to the Telegram API and wait for the next updates, when the updates are loaded:
+	+ It will iterate over the updates, and for each update:
+		+ If text message starts with "/"
+			+ Splits the `text.substr(1)`in spaces
+			+ Emits 'command' event with the created array of parameters
+			+ Emits an event in **command_listener** Event Emitter **(You can bind events to it using `bot.command('command-name', callback([ arg1, arg2 ... ], telegram_message)`)**
+		+ Emits an 'update' event with the `telegram_message` object extracted from the `update`
+	+ After this, it will listen for the next update
+
+
+**Note:** If `config.watcher.start_watching === true` then, the update loop will start after construct the object
+
+#### Binding command events
+
+You can also extend easily and modularly the events by using `bot.command`.
+
+For example:
+```js
+	/* A command that replies the first argument and say Yahooo! after it */
+	bot.command('yahoo', async ([ arg ], msg) => 
+		await bot.write(msg.from.id, arg + " Yahoo!")
+	);
+```
+
+#### Asking something to the user
+In some times, you will need to ask something to the user, the **telegram api** has an async function integrated for it `bot.nextMessage()`
+
+For example:
+```js
+	/* A command that ask a word to the user and reply it */
+	bot.command('repeat', async ([], msg) => {
+		await bot.write(msg.from.id, "Hey, please enter a word:");
+		let { text } = await bot.nextMessage();
+		await bot.write(msg.from.id, "You have written: " + text);
+	});
+```
+### That's all folks!
+## Donations
+You can help by donating all your stars to this repo :D Good Coding!

@@ -81,7 +81,7 @@ module.exports = (async () => {
     const link = exports.link = async ([ repo, board ], { from }) => {
         if(!repo) {
             await bot.write(from.id, `Please enter the repository in the format *User*/*repo*`);
-            repo = await bot.nextMessage(from.id);
+            repo = (await bot.nextMessage(from.id)).text;
         }
 
         let github_repo;
