@@ -15,7 +15,7 @@
   
 ## Features
 + Copy your github issues into a Trello `Backlog` list
-+ Every time you run the command, all cards will automatically updated
++ Every time you run the command **/link**, all cards will automatically updated
 + If an issue is closed
 	+ It removes it if it is in the `Backlog` list
 	+ It moves it to `Done` if it is in the To Do list
